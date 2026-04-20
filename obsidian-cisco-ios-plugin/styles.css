@@ -1,58 +1,71 @@
 .cisco-ios-block {
   font-family: var(--font-monospace);
   font-size: var(--code-size);
-  background-color: var(--code-background);
-  border-radius: var(--radius-m);
-  padding: var(--code-padding);
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
   overflow-x: auto;
   line-height: 1.5;
 }
 
-/* Comments: lines starting with ! or !! */
+/* Ensure no theme backgrounds bleed onto token spans */
+.cisco-ios-block span {
+  background: none !important;
+}
+
+/* Comments: lines starting with ! */
 .chl-ios-comment {
   color: var(--color-green);
   font-style: italic;
+  background: none;
 }
 
 /* Top-level commands: interface, router, ip, vrf, etc. */
 .chl-ios-keyword {
   color: var(--color-blue);
   font-weight: 600;
+  background: none;
 }
 
 /* Sub-commands: description, shutdown, neighbor, etc. */
 .chl-ios-builtin {
   color: var(--color-purple);
+  background: none;
 }
 
 /* IP addresses and numbers */
 .chl-ios-number {
   color: var(--color-orange);
+  background: none;
 }
 
 /* Interface names: GigabitEthernet0/0, Loopback0, etc. */
 .chl-ios-type {
   color: var(--color-cyan);
+  background: none;
 }
 
 /* Description text content */
 .chl-ios-string {
   color: var(--color-yellow);
+  background: none;
 }
 
-/* permit keyword — green */
+/* permit keyword */
 .chl-ios-permit {
   color: #4caf50;
   font-weight: 600;
+  background: none;
 }
 
-/* deny keyword — red */
+/* deny keyword */
 .chl-ios-deny {
   color: #f44336;
   font-weight: 600;
+  background: none;
 }
 
-/* Dark theme — VS Code-inspired palette */
+/* Dark theme */
 .theme-dark .chl-ios-comment  { color: #6a9955; }
 .theme-dark .chl-ios-keyword  { color: #569cd6; font-weight: 600; }
 .theme-dark .chl-ios-builtin  { color: #c586c0; }
