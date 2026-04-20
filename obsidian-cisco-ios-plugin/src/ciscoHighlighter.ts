@@ -13,6 +13,9 @@ const TOP_KEYWORDS = new Set([
   "username", "enable", "disable", "service", "line", "class-map",
   "policy-map", "route-map", "spanning-tree", "tacacs", "tacacs-server",
   "radius", "radius-server", "ptp", "dhcp", "netconf", "version",
+  "class", "policy", "prefix-set", "as-path-set", "community-set",
+  "extcommunity-set", "flow", "track", "standby", "object-group",
+  "flow-export", "flow-monitor", "flow-record", "banner",
 ]);
 
 const SUB_KEYWORDS = new Set([
@@ -24,10 +27,13 @@ const SUB_KEYWORDS = new Set([
   "ingress", "egress", "tag", "push", "pop", "translate", "propagate",
   "cost", "priority", "weight", "local-preference", "community", "origin",
   "set", "match", "call", "continue", "drop", "pass", "prepend",
+  "address", "next-hop", "local-as", "remove-private-as",
+  "ip-address", "maximum-paths", "send-community", "soft-reconfiguration",
+  "update-source", "ebgp-multihop", "remote-as", "password",
 ]);
 
 const INTERFACE_NAMES =
-  /^(GigabitEthernet|TenGigabitEthernet|HundredGigabitEthernet|TwentyFiveGigE|FortyGigabitEthernet|FastEthernet|Bundle-Ether|BVI|GigE|Loopback|Tunnel|Vlan|Serial|MgmtEth|Management|Port-channel|Ethernet|ATM|Dialer|Multilink|Cellular)([\d/.:]+)/i;
+  /^(GigabitEthernet|TenGigabitEthernet|HundredGigabitEthernet|TwoHundredGigabitEthernet|FourHundredGigabitEthernet|TwentyFiveGigE|FortyGigabitEthernet|FiftyGigabitEthernet|AppGigabitEthernet|FastEthernet|Bundle-Ether|BVI|GigE|Loopback|Tunnel|Vlan|Serial|MgmtEth|Management|Port-channel|Ethernet|ATM|Dialer|Multilink|Cellular)([\/\d.:-]+)/i;
 
 const IPV4_RE = /\b(\d{1,3}\.){3}\d{1,3}(\/\d{1,2})?\b/;
 const IPV6_RE = /\b([0-9a-fA-F]{0,4}:){2,7}[0-9a-fA-F]{0,4}(\/\d{1,3})?\b/;
@@ -38,9 +44,9 @@ export function tokenizeCiscoLine(line: string): Token[] {
   const tokens: Token[] = [];
   const trimmed = line.trimStart();
 
-  if (trimmed === "" ) return tokens;
+  if (trimmed === "") return tokens;
 
-  // Full-line comment: starts with ! or !!
+  // Full-line comment: starts with !
   if (trimmed.startsWith("!")) {
     tokens.push({ start: 0, end: line.length, cssClass: "chl-ios-comment" });
     return tokens;
@@ -53,6 +59,12 @@ export function tokenizeCiscoLine(line: string): Token[] {
     if (line[pos] === " " || line[pos] === "\t") {
       pos++;
       continue;
+    }
+
+    // Inline end-of-line comment after a space
+    if (line[pos] === "!" && (pos === 0 || line[pos - 1] === " " || line[pos - 1] === "\t")) {
+      tokens.push({ start: pos, end: line.length, cssClass: "chl-ios-comment" });
+      break;
     }
 
     const slice = line.slice(pos);
@@ -102,7 +114,7 @@ export function tokenizeCiscoLine(line: string): Token[] {
       if (word === "description") {
         tokens.push({ start: pos, end: wordEnd, cssClass: "chl-ios-builtin" });
         pos = wordEnd;
-        // Rest of the line is a string
+        // Rest of the line is a string value
         if (pos < line.length) {
           tokens.push({ start: pos, end: line.length, cssClass: "chl-ios-string" });
           pos = line.length;
