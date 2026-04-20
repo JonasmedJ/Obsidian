@@ -1,71 +1,59 @@
+/* Obsidian's outer container for ios/cisco code blocks */
+.block-language-ios,
+.block-language-cisco,
+.block-language-cisco-ios {
+  background: transparent !important;
+  padding: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
 .cisco-ios-block {
   font-family: var(--font-monospace);
   font-size: var(--code-size);
   background: transparent;
-  border-radius: 0;
+  border: none;
   padding: 0;
+  margin: 0;
   overflow-x: auto;
   line-height: 1.5;
 }
 
-/* Ensure no theme backgrounds bleed onto token spans */
-.cisco-ios-block span {
+/* Nuke any theme backgrounds bleeding onto token spans */
+.cisco-ios-block span,
+.block-language-ios span,
+.block-language-cisco span,
+.block-language-cisco-ios span {
   background: none !important;
 }
 
+/* IOS prompt: S1(config)# or Router> */
+.chl-ios-prompt  { color: #888; }
+
 /* Comments: lines starting with ! */
-.chl-ios-comment {
-  color: var(--color-green);
-  font-style: italic;
-  background: none;
-}
+.chl-ios-comment { color: var(--color-green); font-style: italic; }
 
-/* Top-level commands: interface, router, ip, vrf, etc. */
-.chl-ios-keyword {
-  color: var(--color-blue);
-  font-weight: 600;
-  background: none;
-}
+/* Top-level commands: interface, router, ip, etc. */
+.chl-ios-keyword { color: var(--color-blue); font-weight: 600; }
 
-/* Sub-commands: description, shutdown, neighbor, etc. */
-.chl-ios-builtin {
-  color: var(--color-purple);
-  background: none;
-}
+/* Sub-commands: switchport, shutdown, neighbor, etc. */
+.chl-ios-builtin { color: var(--color-purple); }
 
 /* IP addresses and numbers */
-.chl-ios-number {
-  color: var(--color-orange);
-  background: none;
-}
+.chl-ios-number  { color: var(--color-orange); }
 
 /* Interface names: GigabitEthernet0/0, Loopback0, etc. */
-.chl-ios-type {
-  color: var(--color-cyan);
-  background: none;
-}
+.chl-ios-type    { color: var(--color-cyan); }
 
 /* Description text content */
-.chl-ios-string {
-  color: var(--color-yellow);
-  background: none;
-}
+.chl-ios-string  { color: var(--color-yellow); }
 
-/* permit keyword */
-.chl-ios-permit {
-  color: #4caf50;
-  font-weight: 600;
-  background: none;
-}
-
-/* deny keyword */
-.chl-ios-deny {
-  color: #f44336;
-  font-weight: 600;
-  background: none;
-}
+/* permit / deny */
+.chl-ios-permit  { color: #4caf50; font-weight: 600; }
+.chl-ios-deny    { color: #f44336; font-weight: 600; }
 
 /* Dark theme */
+.theme-dark .chl-ios-prompt   { color: #666; }
 .theme-dark .chl-ios-comment  { color: #6a9955; }
 .theme-dark .chl-ios-keyword  { color: #569cd6; font-weight: 600; }
 .theme-dark .chl-ios-builtin  { color: #c586c0; }
@@ -76,6 +64,7 @@
 .theme-dark .chl-ios-deny     { color: #f07070; font-weight: 600; }
 
 /* Light theme */
+.theme-light .chl-ios-prompt   { color: #999; }
 .theme-light .chl-ios-comment  { color: #008000; }
 .theme-light .chl-ios-keyword  { color: #0000ff; font-weight: 600; }
 .theme-light .chl-ios-builtin  { color: #800080; }

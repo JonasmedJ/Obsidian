@@ -8,6 +8,12 @@ function renderCiscoBlock(
   el: HTMLElement,
   _ctx: MarkdownPostProcessorContext
 ): void {
+  // Strip background from Obsidian's outer .block-language-ios container
+  el.style.background = "transparent";
+  el.style.padding = "0";
+  el.style.border = "none";
+  el.style.boxShadow = "none";
+
   el.empty();
   const pre = el.createEl("pre", { cls: "cisco-ios-block" });
   const code = pre.createEl("code", { cls: "language-ios" });
@@ -52,7 +58,6 @@ class CiscoHighlighterPlugin {
   }
 
   buildDecorations(view: EditorView): DecorationSet {
-    // Only apply in Live Preview mode
     if (!view.state.field(editorLivePreviewField)) {
       return Decoration.none;
     }
@@ -61,7 +66,6 @@ class CiscoHighlighterPlugin {
     const doc = view.state.doc;
 
     for (const { from, to } of view.visibleRanges) {
-      // Look back up to 50 lines to catch a fence that opened above the viewport
       const startLine = Math.max(1, doc.lineAt(from).number - 50);
       const endLine = doc.lineAt(to).number;
 
@@ -72,9 +76,7 @@ class CiscoHighlighterPlugin {
         const text = line.text.trim();
 
         if (!inBlock) {
-          if (FENCE_OPEN_RE.test(text)) {
-            inBlock = true;
-          }
+          if (FENCE_OPEN_RE.test(text)) inBlock = true;
           continue;
         }
 
@@ -83,7 +85,6 @@ class CiscoHighlighterPlugin {
           continue;
         }
 
-        // Only emit decorations for lines within the visible range
         if (line.from > to) break;
         if (line.to < from) continue;
 
