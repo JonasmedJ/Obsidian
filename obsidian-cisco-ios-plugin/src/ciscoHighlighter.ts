@@ -15,7 +15,7 @@ const TOP_KEYWORDS = new Set([
   "radius", "radius-server", "ptp", "dhcp", "netconf", "version",
   "class", "policy", "prefix-set", "as-path-set", "community-set",
   "extcommunity-set", "flow", "track", "standby", "object-group",
-  "banner", "cdp", "lldp", "vtp",
+  "banner", "cdp", "lldp", "vtp", "terminal", "mac",
 ]);
 
 const SUB_KEYWORDS = new Set([
@@ -33,22 +33,50 @@ const SUB_KEYWORDS = new Set([
   // switchport
   "mode", "access", "trunk", "native", "nonegotiate", "violation",
   "restrict", "protect", "port-security", "mac-address", "aging", "sticky",
+  "allowed", "remove",
   // spanning-tree
-  "portfast", "bpduguard",
+  "portfast", "bpduguard", "rapid-pvst", "pvst", "mstp",
   // ip sub-commands
   "verify", "source", "inspection", "snooping", "arp",
-  "route", "helper-address", "directed-broadcast",
+  "route", "helper-address", "directed-broadcast", "inside", "outside",
+  "overload", "nat", "secondary",
+  // acl
+  "standard", "extended",
   // line sub-commands
   "synchronous", "login", "exec-timeout", "transport", "input", "output",
+  // aaa
+  "new-model", "key", "authorization", "accounting",
+  // dhcp
+  "pool", "excluded-address", "default-router", "domain-name", "lease",
+  // snmp / logging
+  "location", "host", "trap", "traps",
   // misc
   "privilege", "secret", "modulus", "general-keys", "motd", "ssh",
   "inactivity", "type", "maximum", "range", "algorithm-type", "run",
+  "min-length", "brief", "detail", "neighbors", "peer", "database",
+  "status", "table", "startup-config", "running-config", "flash",
+  "static", "summary", "auto-summary", "default-metric",
+  "pim", "multicast", "mroute",
+]);
+
+const STATUS_GOOD = new Set([
+  "up", "Up", "UP", "connected", "active", "Active", "enabled",
+  "forwarding", "full", "FULL", "established", "synchronized",
+  "complete", "success", "FWD",
+]);
+
+const STATUS_BAD = new Set([
+  "down", "Down", "DOWN", "err-disabled", "notconnect",
+  "blocked", "failed", "inactive", "unusable", "denied", "DENIED",
+  "administratively", "disabled", "BLK", "blocking",
 ]);
 
 const INTERFACE_NAMES =
-  /^(GigabitEthernet|Gi|TenGigabitEthernet|Te|HundredGigabitEthernet|Hu|TwoHundredGigabitEthernet|FourHundredGigabitEthernet|TwentyFiveGigE|FortyGigabitEthernet|FiftyGigabitEthernet|AppGigabitEthernet|FastEthernet|Fa|Bundle-Ether|BVI|GigE|Loopback|Lo|Tunnel|Tu|Vlan|Vl|Serial|Se|MgmtEth|Management|Mg|Port-channel|Po|Ethernet|Et|ATM|Dialer|Multilink|Cellular)([\/\d.:-]+)/i;
+  /^(GigabitEthernet|Gi|TenGigabitEthernet|Te|HundredGigabitEthernet|Hu|TwoHundredGigabitEthernet|FourHundredGigabitEthernet|FortyGigabitEthernet|Fo|TwentyFiveGigE|FiftyGigabitEthernet|AppGigabitEthernet|FastEthernet|Fa|Bundle-Ether|BVI|GigE|Loopback|Lo|Tunnel|Tu|Vlan|Vl|Serial|Se|MgmtEth|Management|Mg|Port-channel|Po|Ethernet|Et|Virtual-Template|Virtual-Access|Vi|Multilink|Mu|Dialer|Di|ATM|Cellular|NVI)([\/\d.:-]+)/i;
 
 const PROMPT_RE = /^[A-Za-z0-9._-]+(?:\([A-Za-z0-9._\/-]+\))?[#>]\s*/;
+const SYSLOG_RE = /^%[A-Z][A-Z0-9_-]*-\d-[A-Z0-9_]+/;
+const MAC_RE = /^[0-9a-fA-F]{4}\.[0-9a-fA-F]{4}\.[0-9a-fA-F]{4}/;
 
 const IPV4_RE = /\b(\d{1,3}\.){3}\d{1,3}(\/\d{1,2})?\b/;
 const IPV6_RE = /\b([0-9a-fA-F]{0,4}:){2,7}[0-9a-fA-F]{0,4}(\/\d{1,3})?\b/;
@@ -88,13 +116,31 @@ export function tokenizeCiscoLine(line: string): Token[] {
       break;
     }
 
-    // Skip markdown bold/italic markers so **keyword** still highlights correctly
+    // Skip markdown bold/italic markers
     if (line[pos] === "*" || line[pos] === "_") {
       pos++;
       continue;
     }
 
     const slice = line.slice(pos);
+
+    // Syslog messages: %PROTO-N-MNEMONIC
+    if (line[pos] === "%") {
+      const syslogMatch = slice.match(SYSLOG_RE);
+      if (syslogMatch) {
+        tokens.push({ start: pos, end: pos + syslogMatch[0].length, cssClass: "chl-ios-syslog" });
+        pos += syslogMatch[0].length;
+        continue;
+      }
+    }
+
+    // MAC address: aabb.ccdd.eeff
+    const macMatch = slice.match(MAC_RE);
+    if (macMatch && macMatch.index === 0) {
+      tokens.push({ start: pos, end: pos + macMatch[0].length, cssClass: "chl-ios-mac" });
+      pos += macMatch[0].length;
+      continue;
+    }
 
     // Interface name (full and abbreviated)
     const ifaceMatch = slice.match(INTERFACE_NAMES);
@@ -156,6 +202,18 @@ export function tokenizeCiscoLine(line: string): Token[] {
 
       if (SUB_KEYWORDS.has(word.toLowerCase())) {
         tokens.push({ start: pos, end: wordEnd, cssClass: "chl-ios-builtin" });
+        pos = wordEnd;
+        continue;
+      }
+
+      if (STATUS_GOOD.has(word)) {
+        tokens.push({ start: pos, end: wordEnd, cssClass: "chl-ios-ok" });
+        pos = wordEnd;
+        continue;
+      }
+
+      if (STATUS_BAD.has(word)) {
+        tokens.push({ start: pos, end: wordEnd, cssClass: "chl-ios-err" });
         pos = wordEnd;
         continue;
       }
