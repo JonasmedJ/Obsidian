@@ -27,71 +27,78 @@
   background: none !important;
 }
 
+/*
+  XML-inspired color mapping:
+    XML tag name  = IOS top-level command  → green
+    XML attribute = IOS sub-command        → white / near-white
+    XML value     = IOS values (IP, num)   → red / coral
+*/
+
 /* IOS prompt: S1(config)# or Router> */
-.chl-ios-prompt    { color: #888; }
+.chl-ios-prompt  { color: #888; }
 
-/* Comments: lines starting with ! */
-.chl-ios-comment   { color: var(--color-green); font-style: italic; }
+/* Comments */
+.chl-ios-comment { color: #6a9955; font-style: italic; }
 
-/* Top-level commands: interface, router, ip, etc. */
-.chl-ios-keyword   { color: var(--color-blue); font-weight: 600; }
+/* Top-level commands — green like XML tag names */
+.chl-ios-keyword { color: #4ec9b0; font-weight: 600; }
 
-/* Sub-commands: switchport, shutdown, neighbor, etc. */
-.chl-ios-builtin   { color: var(--color-purple); }
+/* Sub-commands — white like XML attribute names */
+.chl-ios-builtin { color: #d4d4d4; }
 
-/* IP addresses and numbers */
-.chl-ios-number    { color: var(--color-orange); }
+/* IP addresses, numbers — red/coral like XML string values */
+.chl-ios-number  { color: #f47067; }
 
-/* Interface names: GigabitEthernet0/0, Loopback0, etc. */
-.chl-ios-type      { color: var(--color-cyan); }
+/* Interface names — distinct light blue */
+.chl-ios-type    { color: #569cd6; }
 
 /* MAC addresses */
-.chl-ios-mac       { color: var(--color-cyan); }
+.chl-ios-mac     { color: #569cd6; }
 
-/* Description text content */
-.chl-ios-string    { color: var(--color-yellow); }
+/* Description text content — same coral as values */
+.chl-ios-string  { color: #ce9178; }
 
-/* permit keyword */
-.chl-ios-permit    { color: #4caf50; font-weight: 600; }
+/* permit */
+.chl-ios-permit  { color: #6abf69; font-weight: 600; }
 
-/* deny keyword */
-.chl-ios-deny      { color: #f44336; font-weight: 600; }
+/* deny */
+.chl-ios-deny    { color: #f47067; font-weight: 600; }
 
 /* Syslog messages: %LINK-3-UPDOWN */
-.chl-ios-syslog    { color: var(--color-orange); font-weight: 600; }
+.chl-ios-syslog  { color: #ff9800; font-weight: 600; }
 
-/* Status: up, connected, forwarding, full */
-.chl-ios-ok        { color: #4caf50; }
+/* Status: up, connected, forwarding */
+.chl-ios-ok      { color: #6abf69; }
 
 /* Status: down, err-disabled, notconnect */
-.chl-ios-err       { color: #f44336; }
+.chl-ios-err     { color: #f47067; }
 
-/* Dark theme */
-.theme-dark .chl-ios-prompt   { color: #666; }
-.theme-dark .chl-ios-comment  { color: #6a9955; }
-.theme-dark .chl-ios-keyword  { color: #569cd6; font-weight: 600; }
-.theme-dark .chl-ios-builtin  { color: #c586c0; }
-.theme-dark .chl-ios-number   { color: #b5cea8; }
-.theme-dark .chl-ios-type     { color: #4ec9b0; }
-.theme-dark .chl-ios-mac      { color: #4ec9b0; }
+/* ── Dark theme ──────────────────────────────────────────── */
+.theme-dark .chl-ios-prompt   { color: #555; }
+.theme-dark .chl-ios-comment  { color: #6a9955; font-style: italic; }
+.theme-dark .chl-ios-keyword  { color: #4ec9b0; font-weight: 600; }
+.theme-dark .chl-ios-builtin  { color: #d4d4d4; }
+.theme-dark .chl-ios-number   { color: #f47067; }
+.theme-dark .chl-ios-type     { color: #569cd6; }
+.theme-dark .chl-ios-mac      { color: #569cd6; }
 .theme-dark .chl-ios-string   { color: #ce9178; }
 .theme-dark .chl-ios-permit   { color: #6abf69; font-weight: 600; }
-.theme-dark .chl-ios-deny     { color: #f07070; font-weight: 600; }
+.theme-dark .chl-ios-deny     { color: #f47067; font-weight: 600; }
 .theme-dark .chl-ios-syslog   { color: #ff9800; font-weight: 600; }
 .theme-dark .chl-ios-ok       { color: #6abf69; }
-.theme-dark .chl-ios-err      { color: #f07070; }
+.theme-dark .chl-ios-err      { color: #f47067; }
 
-/* Light theme */
-.theme-light .chl-ios-prompt   { color: #999; }
-.theme-light .chl-ios-comment  { color: #008000; }
-.theme-light .chl-ios-keyword  { color: #0000ff; font-weight: 600; }
-.theme-light .chl-ios-builtin  { color: #800080; }
-.theme-light .chl-ios-number   { color: #098658; }
-.theme-light .chl-ios-type     { color: #267f99; }
-.theme-light .chl-ios-mac      { color: #267f99; }
+/* ── Light theme ─────────────────────────────────────────── */
+.theme-light .chl-ios-prompt   { color: #aaa; }
+.theme-light .chl-ios-comment  { color: #008000; font-style: italic; }
+.theme-light .chl-ios-keyword  { color: #267f99; font-weight: 600; }
+.theme-light .chl-ios-builtin  { color: #1a1a1a; }
+.theme-light .chl-ios-number   { color: #a31515; }
+.theme-light .chl-ios-type     { color: #0000ff; }
+.theme-light .chl-ios-mac      { color: #0000ff; }
 .theme-light .chl-ios-string   { color: #a31515; }
 .theme-light .chl-ios-permit   { color: #2e7d32; font-weight: 600; }
-.theme-light .chl-ios-deny     { color: #c62828; font-weight: 600; }
+.theme-light .chl-ios-deny     { color: #a31515; font-weight: 600; }
 .theme-light .chl-ios-syslog   { color: #e65100; font-weight: 600; }
 .theme-light .chl-ios-ok       { color: #2e7d32; }
-.theme-light .chl-ios-err      { color: #c62828; }
+.theme-light .chl-ios-err      { color: #a31515; }
