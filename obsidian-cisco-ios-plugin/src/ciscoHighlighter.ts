@@ -39,24 +39,29 @@ const SUB_KEYWORDS = new Set([
   // ip sub-commands
   "verify", "source", "inspection", "snooping", "arp",
   "route", "helper-address", "directed-broadcast", "inside", "outside",
-  "overload", "nat", "secondary",
+  "overload", "nat", "secondary", "domain-lookup", "domain-name",
   // acl
   "standard", "extended",
   // line sub-commands
   "synchronous", "login", "exec-timeout", "transport", "input", "output",
+  "con", "vty", "local",
   // aaa
   "new-model", "key", "authorization", "accounting",
   // dhcp
-  "pool", "excluded-address", "default-router", "domain-name", "lease",
+  "pool", "excluded-address", "default-router", "lease",
   // snmp / logging
   "location", "host", "trap", "traps",
+  // crypto
+  "generate", "rsa", "modulus", "general-keys",
   // misc
-  "privilege", "secret", "modulus", "general-keys", "motd", "ssh",
-  "inactivity", "type", "maximum", "range", "algorithm-type", "run",
+  "privilege", "secret", "motd", "ssh", "name",
+  "inactivity", "type", "maximum", "range", "algorithm-type",
+  "scrypt", "md5", "sha", "run",
   "min-length", "brief", "detail", "neighbors", "peer", "database",
   "status", "table", "startup-config", "running-config", "flash",
   "static", "summary", "auto-summary", "default-metric",
-  "pim", "multicast", "mroute",
+  "pim", "multicast", "mroute", "limit", "rate",
+  "encrypt", "encryption", "hash",
 ]);
 
 const STATUS_GOOD = new Set([
